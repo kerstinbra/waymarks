@@ -42,16 +42,16 @@
     function showAtlas(){
       const today=todayIso();
       const app=document.getElementById('app');
-      app.innerHTML='<div class="section-head"><h2>Atlas</h2><p>Routes appear on the day they fly. Munich to Bangkok is already on the map.</p></div><div id="worldMap"></div><div class="flight-list"></div>';
+      app.innerHTML='<div class="section-head"><h2>Atlas</h2></div><div id="worldMap"></div><div class="flight-list"></div>';
       const list=app.querySelector('.flight-list');
       flights.forEach(f=>{ const on=visible(f,today); const row=document.createElement('div'); row.className='flight-item'+(on?'':' waiting'); row.innerHTML='<strong>'+f.from+' - '+f.to+'</strong><span>'+(on?'On the map':'Hidden until flight day')+'</span><span class="meta">'+airports[f.from].name+' to '+airports[f.to].name+'</span><span class="meta">'+f.date.slice(8)+'.'+f.date.slice(5,7)+'. \u00b7 '+f.time+'</span>'; list.appendChild(row); });
       const map=L.map('worldMap',{worldCopyJump:true}).setView([28,20],2);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'\u00a9 OpenStreetMap \u00a9 CARTO',subdomains:'abcd',maxZoom:8}).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'\u00a9 OpenStreetMap',maxZoom:8}).addTo(map);
       const seen=new Set();
       flights.filter(f=>visible(f,today)).forEach(f=>{ L.polyline(arc(airports[f.from],airports[f.to]),{color:'#b4482a',weight:2.5,dashArray:'7 8'}).bindPopup(f.from+' \u2192 '+f.to+'<br>'+f.time).addTo(map); [f.from,f.to].forEach(code=>{ if(seen.has(code)) return; seen.add(code); L.circleMarker([airports[code].lat,airports[code].lng],{radius:7,color:'#1c1712',weight:2,fillColor:'#b4482a',fillOpacity:1}).bindPopup('<strong>'+code+'</strong><br>'+airports[code].name).addTo(map); }); });
       setTimeout(()=>map.invalidateSize(),200);
     }
-    function go(){ if((location.hash||'#home')==='#atlas') showAtlas(); else if(!location.hash||location.hash==='#home') document.getElementById('app').innerHTML='<div class="section-head"><h2>Waymarks</h2><p>Open Atlas for the flight map.</p></div>'; }
+    function go(){ if((location.hash||'#home')==='#atlas') showAtlas(); else if(!location.hash||location.hash==='#home') document.getElementById('app').innerHTML='<div class="section-head"><h2>Waymarks</h2></div>'; }
     window.addEventListener('hashchange', go);
     go();
   </script>
