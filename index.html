@@ -29,24 +29,9 @@
   <main id="app"></main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    const airports = {
-      MUC:{city:'München', lat:48.3538, lng:11.7861},
-      BKK:{city:'Bangkok', lat:13.69, lng:100.7501},
-      DMK:{city:'Bangkok', lat:13.9126, lng:100.6068},
-      CNX:{city:'Chiang Mai', lat:18.7668, lng:98.9626},
-      NRT:{city:'Tokio', lat:35.772, lng:140.3929},
-      HNL:{city:'Honolulu', lat:21.3187, lng:-157.9225},
-      SFO:{city:'San Francisco', lat:37.6213, lng:-122.379},
-      PHX:{city:'Phoenix', lat:33.4373, lng:-112.0078},
-      LHR:{city:'London', lat:51.47, lng:-0.4543},
-      ZRH:{city:'Zürich', lat:47.4582, lng:8.5555}
-    };
-    const countries = [
-      {name:'Deutschland', lat:50.8, lng:10.2},{name:'Thailand', lat:14.8, lng:101.8},{name:'Japan', lat:37.5, lng:138.2},{name:'USA', lat:39.5, lng:-98.3},{name:'Großbritannien', lat:53.4, lng:-1.5},{name:'Schweiz', lat:46.8, lng:8.2}
-    ];
-    const flights = [
-      {from:'MUC',to:'BKK',date:'2026-10-08'},{from:'DMK',to:'CNX',date:'2026-10-10'},{from:'CNX',to:'BKK',date:'2026-10-13'},{from:'BKK',to:'NRT',date:'2026-10-15'},{from:'NRT',to:'HNL',date:'2026-10-27'},{from:'HNL',to:'SFO',date:'2026-11-05'},{from:'PHX',to:'LHR',date:'2026-11-22'},{from:'LHR',to:'ZRH',date:'2026-11-23'}
-    ];
+    const airports = { MUC:{lat:48.3538,lng:11.7861}, BKK:{lat:13.69,lng:100.7501}, DMK:{lat:13.9126,lng:100.6068}, CNX:{lat:18.7668,lng:98.9626}, NRT:{lat:35.772,lng:140.3929}, HNL:{lat:21.3187,lng:-157.9225}, SFO:{lat:37.6213,lng:-122.379}, PHX:{lat:33.4373,lng:-112.0078}, LHR:{lat:51.47,lng:-0.4543}, ZRH:{lat:47.4582,lng:8.5555} };
+    const countries = [{name:'Deutschland',lat:50.8,lng:10.2},{name:'Thailand',lat:14.8,lng:101.8},{name:'Japan',lat:37.5,lng:138.2},{name:'USA',lat:39.5,lng:-98.3},{name:'Gro\u00dfbritannien',lat:53.4,lng:-1.5},{name:'Schweiz',lat:46.8,lng:8.2}];
+    const flights = [{from:'MUC',to:'BKK',date:'2026-10-08'},{from:'DMK',to:'CNX',date:'2026-10-10'},{from:'CNX',to:'BKK',date:'2026-10-13'},{from:'BKK',to:'NRT',date:'2026-10-15'},{from:'NRT',to:'HNL',date:'2026-10-27'},{from:'HNL',to:'SFO',date:'2026-11-05'},{from:'PHX',to:'LHR',date:'2026-11-22'},{from:'LHR',to:'ZRH',date:'2026-11-23'}];
     function todayIso(){ const n=new Date(); return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0'); }
     function visible(f,t){ return f.date==='2026-10-08' || f.date<=t; }
     function arc(a,b){ const p=[]; let lng2=b.lng; if(Math.abs(lng2-a.lng)>180) lng2+=lng2>a.lng?-360:360; for(let i=0;i<=64;i++){ const t=i/64; p.push([a.lat+(b.lat-a.lat)*t+Math.sin(Math.PI*t)*2.2, a.lng+(lng2-a.lng)*t]); } return p; }
@@ -54,15 +39,15 @@
     function showAtlas(){
       const today=todayIso();
       document.getElementById('app').innerHTML='<div class="section-head"><h2>Atlas</h2></div><div id="worldMap"></div>';
-      const map=L.map('worldMap',{worldCopyJump:true, zoomControl:true}).setView([28,15],2);
+      const map=L.map('worldMap',{worldCopyJump:true}).setView([28,15],2);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'\u00a9 OpenStreetMap',maxZoom:8}).addTo(map);
       countries.forEach(c=> L.marker([c.lat,c.lng],{interactive:false,opacity:0}).bindTooltip(c.name,{permanent:true,direction:'center',className:'country-label'}).addTo(map));
-      Object.keys(airports).forEach(code=>{ if(code==='DMK') return; const a=airports[code]; L.marker([a.lat,a.lng],{icon:pin(), keyboard:false}).addTo(map); });
+      Object.keys(airports).forEach(code=>{ if(code==='DMK') return; L.marker([airports[code].lat,airports[code].lng],{icon:pin()}).addTo(map); });
       flights.filter(f=>visible(f,today)).forEach(f=> L.polyline(arc(airports[f.from],airports[f.to]),{color:'#9a5344',weight:1.1,opacity:.8,dashArray:'1.5 7',lineCap:'round'}).addTo(map));
       setTimeout(()=>map.invalidateSize(),200);
     }
     function showAbout(){
-      document.getElementById('app').innerHTML='<section class="about-copy"><img alt="Kerstin und Stefan" src="kerstin-stefan.jpg"><h2>Kerstin & Stefan</h2><p>Begleite uns auf unserer Reise einmal um die Welt. Vom Großstadtdschungel Bangkok über die unbekannten Kulturen Japans und die historischen Kulturschätze Hawaiis bis in die Weiten der USA, und zu allem, was uns dazwischen begegnet.</p></section>';
+      document.getElementById('app').innerHTML='<section class="about-copy"><img alt="Kerstin und Stefan" src="https://n.uguu.se/qHvhtnAL.jpg"><h2>Kerstin & Stefan</h2><p>Begleite uns auf unserer Reise einmal um die Welt. Vom Gro\u00dfstadtdschungel Bangkok \u00fcber die unbekannten Kulturen Japans und die historischen Kultursch\u00e4tze Hawaiis bis in die Weiten der USA, und zu allem, was uns dazwischen begegnet.</p></section>';
     }
     function go(){ const hash=location.hash||'#home'; if(hash==='#atlas') showAtlas(); else if(hash==='#about') showAbout(); else document.getElementById('app').innerHTML='<div class="section-head"><h2>Waymarks</h2></div>'; }
     window.addEventListener('hashchange', go);
