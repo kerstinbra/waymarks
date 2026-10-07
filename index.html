@@ -11,10 +11,11 @@
     .country-label { background: transparent; border: 0; box-shadow: none; font-family: Georgia, serif; font-size: 14px; letter-spacing: .04em; text-transform: uppercase; color: #5c534a; }
     .pin { background: none; border: 0; }
     .pin i { display: block; width: 9px; height: 9px; background: #b4482a; border: 1.5px solid #fff; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); box-shadow: 0 1px 2px rgba(28,23,18,.28); }
-    .about-copy { max-width: 42rem; }
-    .about-copy h2 { font-size: 3rem; margin: 18px 0 12px; }
+    .about-copy { display: grid; grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: center; }
+    .about-copy h2 { font-size: clamp(2.4rem, 5vw, 3.4rem); margin: 0 0 14px; }
     .about-copy p { color: #5c534a; font-size: 1.08rem; }
-    .about-copy img { width: min(100%, 440px); border-radius: 24px; display: block; }
+    .about-copy img { width: 100%; border-radius: 24px; display: block; object-fit: cover; max-height: 560px; }
+    @media (max-width: 800px) { .about-copy { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -47,7 +48,7 @@
       setTimeout(()=>map.invalidateSize(),200);
     }
     function showAbout(){
-      document.getElementById('app').innerHTML='<section class="about-copy"><img alt="Kerstin und Stefan" src="https://n.uguu.se/qHvhtnAL.jpg"><h2>Kerstin & Stefan</h2><p>Begleite uns auf unserer Reise einmal um die Welt. Vom Gro\u00dfstadtdschungel Bangkok \u00fcber die unbekannten Kulturen Japans und die historischen Kultursch\u00e4tze Hawaiis bis in die Weiten der USA, und zu allem, was uns dazwischen begegnet.</p></section>';
+      document.getElementById('app').innerHTML='<section class="about-copy"><div><h2>Kerstin & Stefan</h2><p>Begleite uns auf unserer Reise einmal um die Welt. Vom Gro\u00dfstadtdschungel Bangkok \u00fcber die unbekannten Kulturen Japans und die historischen Kultursch\u00e4tze Hawaiis bis in die Weiten der USA, und zu allem, was uns dazwischen begegnet.</p></div><img alt="Kerstin und Stefan" src="https://n.uguu.se/qHvhtnAL.jpg"></section>';
     }
     function go(){ const hash=location.hash||'#home'; if(hash==='#atlas') showAtlas(); else if(hash==='#about') showAbout(); else document.getElementById('app').innerHTML='<div class="section-head"><h2>Waymarks</h2></div>'; }
     window.addEventListener('hashchange', go);
