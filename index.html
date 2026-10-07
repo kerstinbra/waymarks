@@ -11,9 +11,6 @@
     .city-label, .country-label { background: transparent; border: 0; box-shadow: none; font-family: Georgia, serif; color: #1c1712; }
     .city-label { font-size: 13px; font-weight: 700; }
     .country-label { font-size: 15px; letter-spacing: .04em; text-transform: uppercase; color: #5c534a; }
-    .flight-list { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
-    .flight-item { display: grid; grid-template-columns: 7.5rem 1fr; gap: 4px 16px; padding: 14px 16px; border-radius: 14px; background: rgba(255,255,255,.55); border: 1px solid rgba(28,23,18,.12); }
-    .flight-item.waiting { opacity: .55; }
   </style>
 </head>
 <body>
@@ -49,35 +46,30 @@
       {name:'Schweiz', lat:46.8, lng:8.2}
     ];
     const flights = [
-      {from:'MUC',to:'BKK',date:'2026-10-08',time:'14:25–06:05 (+1)'},
-      {from:'DMK',to:'CNX',date:'2026-10-10',time:'21:15–22:25'},
-      {from:'CNX',to:'BKK',date:'2026-10-13',time:'22:20–23:40'},
-      {from:'BKK',to:'NRT',date:'2026-10-15',time:'11:35–20:05'},
-      {from:'NRT',to:'HNL',date:'2026-10-27',time:'19:05–07:10 (−1)'},
-      {from:'HNL',to:'SFO',date:'2026-11-05',time:'12:15–19:25'},
-      {from:'PHX',to:'LHR',date:'2026-11-22',time:'20:40–13:35 (+1)'},
-      {from:'LHR',to:'ZRH',date:'2026-11-23',time:'16:00–18:50'}
+      {from:'MUC',to:'BKK',date:'2026-10-08'},
+      {from:'DMK',to:'CNX',date:'2026-10-10'},
+      {from:'CNX',to:'BKK',date:'2026-10-13'},
+      {from:'BKK',to:'NRT',date:'2026-10-15'},
+      {from:'NRT',to:'HNL',date:'2026-10-27'},
+      {from:'HNL',to:'SFO',date:'2026-11-05'},
+      {from:'PHX',to:'LHR',date:'2026-11-22'},
+      {from:'LHR',to:'ZRH',date:'2026-11-23'}
     ];
     function todayIso(){ const n=new Date(); return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0'); }
     function visible(f,t){ return f.date==='2026-10-08' || f.date<=t; }
     function arc(a,b){ const p=[]; let lng2=b.lng; if(Math.abs(lng2-a.lng)>180) lng2+=lng2>a.lng?-360:360; for(let i=0;i<=48;i++){ const t=i/48; p.push([a.lat+(b.lat-a.lat)*t+Math.sin(Math.PI*t)*4, a.lng+(lng2-a.lng)*t]); } return p; }
-    function day(iso){ return iso.slice(8)+'.'+iso.slice(5,7)+'.'; }
     function showAtlas(){
       const today=todayIso();
-      const app=document.getElementById('app');
-      app.innerHTML='<div class="section-head"><h2>Atlas</h2></div><div id="worldMap"></div><div class="flight-list"></div>';
-      const list=app.querySelector('.flight-list');
-      flights.forEach(f=>{ const on=visible(f,today); const row=document.createElement('div'); row.className='flight-item'+(on?'':' waiting'); row.innerHTML='<strong>'+day(f.date)+'</strong><span>'+airports[f.from].city+' → '+airports[f.to].city+' <span class="meta">'+f.from+'–'+f.to+' · '+f.time+'</span></span>'; list.appendChild(row); });
+      document.getElementById('app').innerHTML='<div class="section-head"><h2>Atlas</h2></div><div id="worldMap"></div>';
       const map=L.map('worldMap',{worldCopyJump:true}).setView([28,15],2);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'\u00a9 OpenStreetMap',maxZoom:8}).addTo(map);
       countries.forEach(c=> L.marker([c.lat,c.lng],{interactive:false,opacity:0}).bindTooltip(c.name,{permanent:true,direction:'center',className:'country-label'}).addTo(map));
-      const seen=new Set();
       Object.keys(airports).forEach(code=>{
         if(code==='DMK') return;
         const a=airports[code];
         L.circleMarker([a.lat,a.lng],{radius:6,color:'#1c1712',weight:2,fillColor:'#b4482a',fillOpacity:1}).bindTooltip(a.city,{permanent:true,direction:'top',offset:[0,-8],className:'city-label'}).addTo(map);
       });
-      flights.filter(f=>visible(f,today)).forEach(f=>{ L.polyline(arc(airports[f.from],airports[f.to]),{color:'#b4482a',weight:2.5,dashArray:'7 8'}).addTo(map); });
+      flights.filter(f=>visible(f,today)).forEach(f=> L.polyline(arc(airports[f.from],airports[f.to]),{color:'#b4482a',weight:2.5,dashArray:'7 8'}).addTo(map));
       setTimeout(()=>map.invalidateSize(),200);
     }
     function go(){ if((location.hash||'#home')==='#atlas') showAtlas(); else if(!location.hash||location.hash==='#home') document.getElementById('app').innerHTML='<div class="section-head"><h2>Waymarks</h2></div>'; }
