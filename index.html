@@ -11,9 +11,10 @@
     .city-label, .country-label { background: transparent; border: 0; box-shadow: none; font-family: Georgia, serif; color: #1c1712; }
     .city-label { font-size: 13px; font-weight: 700; }
     .country-label { font-size: 15px; letter-spacing: .04em; text-transform: uppercase; color: #5c534a; }
-    .about-copy { max-width: 40rem; }
-    .about-copy h2 { font-size: 3rem; margin: 0 0 12px; }
+    .about-copy { max-width: 42rem; }
+    .about-copy h2 { font-size: 3rem; margin: 18px 0 12px; }
     .about-copy p { color: #5c534a; font-size: 1.08rem; }
+    .about-copy img { width: min(100%, 440px); border-radius: 24px; display: block; }
   </style>
 </head>
 <body>
@@ -41,22 +42,10 @@
       ZRH:{city:'Zürich', country:'Schweiz', lat:47.4582, lng:8.5555}
     };
     const countries = [
-      {name:'Deutschland', lat:50.8, lng:10.2},
-      {name:'Thailand', lat:14.8, lng:101.8},
-      {name:'Japan', lat:37.5, lng:138.2},
-      {name:'USA', lat:39.5, lng:-98.3},
-      {name:'Großbritannien', lat:53.4, lng:-1.5},
-      {name:'Schweiz', lat:46.8, lng:8.2}
+      {name:'Deutschland', lat:50.8, lng:10.2},{name:'Thailand', lat:14.8, lng:101.8},{name:'Japan', lat:37.5, lng:138.2},{name:'USA', lat:39.5, lng:-98.3},{name:'Großbritannien', lat:53.4, lng:-1.5},{name:'Schweiz', lat:46.8, lng:8.2}
     ];
     const flights = [
-      {from:'MUC',to:'BKK',date:'2026-10-08'},
-      {from:'DMK',to:'CNX',date:'2026-10-10'},
-      {from:'CNX',to:'BKK',date:'2026-10-13'},
-      {from:'BKK',to:'NRT',date:'2026-10-15'},
-      {from:'NRT',to:'HNL',date:'2026-10-27'},
-      {from:'HNL',to:'SFO',date:'2026-11-05'},
-      {from:'PHX',to:'LHR',date:'2026-11-22'},
-      {from:'LHR',to:'ZRH',date:'2026-11-23'}
+      {from:'MUC',to:'BKK',date:'2026-10-08'},{from:'DMK',to:'CNX',date:'2026-10-10'},{from:'CNX',to:'BKK',date:'2026-10-13'},{from:'BKK',to:'NRT',date:'2026-10-15'},{from:'NRT',to:'HNL',date:'2026-10-27'},{from:'HNL',to:'SFO',date:'2026-11-05'},{from:'PHX',to:'LHR',date:'2026-11-22'},{from:'LHR',to:'ZRH',date:'2026-11-23'}
     ];
     function todayIso(){ const n=new Date(); return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0'); }
     function visible(f,t){ return f.date==='2026-10-08' || f.date<=t; }
@@ -67,16 +56,12 @@
       const map=L.map('worldMap',{worldCopyJump:true}).setView([28,15],2);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'\u00a9 OpenStreetMap',maxZoom:8}).addTo(map);
       countries.forEach(c=> L.marker([c.lat,c.lng],{interactive:false,opacity:0}).bindTooltip(c.name,{permanent:true,direction:'center',className:'country-label'}).addTo(map));
-      Object.keys(airports).forEach(code=>{
-        if(code==='DMK') return;
-        const a=airports[code];
-        L.circleMarker([a.lat,a.lng],{radius:6,color:'#1c1712',weight:2,fillColor:'#b4482a',fillOpacity:1}).bindTooltip(a.city,{permanent:true,direction:'top',offset:[0,-8],className:'city-label'}).addTo(map);
-      });
+      Object.keys(airports).forEach(code=>{ if(code==='DMK') return; const a=airports[code]; L.circleMarker([a.lat,a.lng],{radius:6,color:'#1c1712',weight:2,fillColor:'#b4482a',fillOpacity:1}).bindTooltip(a.city,{permanent:true,direction:'top',offset:[0,-8],className:'city-label'}).addTo(map); });
       flights.filter(f=>visible(f,today)).forEach(f=> L.polyline(arc(airports[f.from],airports[f.to]),{color:'#b4482a',weight:2.5,dashArray:'7 8'}).addTo(map));
       setTimeout(()=>map.invalidateSize(),200);
     }
     function showAbout(){
-      document.getElementById('app').innerHTML='<section class="about-copy"><h2>Kerstin & Stefan</h2><p>Begleite uns auf unserer Reise einmal um die Welt. Vom Großstadtdschungel Bangkok über die unbekannten Kulturen Japans und die historischen Kulturschätze Hawaiis bis in die Weiten der USA, und zu allem, was uns dazwischen begegnet.</p></section>';
+      document.getElementById('app').innerHTML='<section class="about-copy"><img alt="Kerstin und Stefan" src="kerstin-stefan.jpg"><h2>Kerstin & Stefan</h2><p>Begleite uns auf unserer Reise einmal um die Welt. Vom Großstadtdschungel Bangkok über die unbekannten Kulturen Japans und die historischen Kulturschätze Hawaiis bis in die Weiten der USA, und zu allem, was uns dazwischen begegnet.</p></section>';
     }
     function go(){ const hash=location.hash||'#home'; if(hash==='#atlas') showAtlas(); else if(hash==='#about') showAbout(); else document.getElementById('app').innerHTML='<div class="section-head"><h2>Waymarks</h2></div>'; }
     window.addEventListener('hashchange', go);
