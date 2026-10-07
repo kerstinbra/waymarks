@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Waymarks — Travel Stories</title>
+  <title>Waymarks</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
@@ -12,18 +12,20 @@
     .pin { background: none; border: 0; }
     .pin i { display: block; width: 9px; height: 9px; background: #b4482a; border: 1.5px solid #fff; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); box-shadow: 0 1px 2px rgba(28,23,18,.28); }
     .about-copy { display: grid; grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: center; }
-    .about-copy h2 { font-size: clamp(2.4rem, 5vw, 3.4rem); margin: 0 0 14px; }
-    .about-copy p { color: #5c534a; font-size: 1.08rem; }
+    .about-copy h2, .story h2, .post h2 { font-size: clamp(2.2rem, 5vw, 3.4rem); margin: 8px 0 12px; }
+    .about-copy p, .story p, .post p { color: #5c534a; font-size: 1.08rem; }
     .about-copy img { width: 100%; border-radius: 24px; display: block; object-fit: cover; max-height: 560px; }
+    .posts { display: flex; flex-direction: column; gap: 28px; max-width: 46rem; }
+    .post { padding-bottom: 22px; border-bottom: 1px solid rgba(28,23,18,.12); }
+    .post a.more { color: #b4482a; }
     .story { max-width: 42rem; }
-    .story h2 { font-size: clamp(2.4rem, 5vw, 3.6rem); margin: 8px 0 10px; }
-    .story p { font-size: 1.12rem; }
+    .back { color: #b4482a; display: inline-block; margin-bottom: 12px; }
     @media (max-width: 800px) { .about-copy { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
   <header class="site-header">
-    <a class="mark" href="#home"><span class="mark-dot"></span>Waymarks</a>
+    <a class="mark" href="#stories"><span class="mark-dot"></span>Waymarks</a>
     <nav class="nav">
       <a href="#stories">Stories</a>
       <a href="#atlas">Atlas</a>
@@ -33,6 +35,15 @@
   <main id="app"></main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
+    const stories = [
+      {id:'deutschland', country:'Deutschland', date:'7. Oktober 2026', title:'Der Countdown l\u00e4uft', excerpt:'In einem Tag starten wir unsere gro\u00dfe Reise. Die Koffer sind fast gepackt, der K\u00fchlschrank ist leer.', body:['In einem Tag starten wir unsere gro\u00dfe Reise. Die Koffer sind fast gepackt, der K\u00fchlschrank ist leer, und irgendwo zwischen Ladeger\u00e4t und Pass liegt noch die Liste der Dinge, die wir bestimmt vergessen.','Morgen geht es von M\u00fcnchen nach Bangkok. Heute ist der letzte Abend, an dem die Wohnung noch nach Alltag riecht. Die Schuhe stehen schon an der T\u00fcr. Das Ticket ist gespeichert. Der Rest ist Warten, und ein bisschen Ungeduld.']},
+      {id:'thailand', country:'Thailand', date:'8. Oktober 2026', title:'Thailand', excerpt:'Bangkok und Chiang Mai. Die Geschichte kommt, wenn wir da sind.', body:['Die Geschichte kommt, wenn wir da sind.']},
+      {id:'japan', country:'Japan', date:'15. Oktober 2026', title:'Japan', excerpt:'Tokio. Die Geschichte kommt, wenn wir da sind.', body:['Die Geschichte kommt, wenn wir da sind.']},
+      {id:'hawaii', country:'Hawaii', date:'27. Oktober 2026', title:'Hawaii', excerpt:'Honolulu. Die Geschichte kommt, wenn wir da sind.', body:['Die Geschichte kommt, wenn wir da sind.']},
+      {id:'usa', country:'USA', date:'5. November 2026', title:'USA', excerpt:'San Francisco und Phoenix. Die Geschichte kommt, wenn wir da sind.', body:['Die Geschichte kommt, wenn wir da sind.']},
+      {id:'grossbritannien', country:'Gro\u00dfbritannien', date:'22. November 2026', title:'Gro\u00dfbritannien', excerpt:'London. Die Geschichte kommt, wenn wir da sind.', body:['Die Geschichte kommt, wenn wir da sind.']},
+      {id:'schweiz', country:'Schweiz', date:'23. November 2026', title:'Schweiz', excerpt:'Z\u00fcrich. Die Geschichte kommt, wenn wir da sind.', body:['Die Geschichte kommt, wenn wir da sind.']}
+    ];
     const airports = { MUC:{lat:48.3538,lng:11.7861}, BKK:{lat:13.69,lng:100.7501}, DMK:{lat:13.9126,lng:100.6068}, CNX:{lat:18.7668,lng:98.9626}, NRT:{lat:35.772,lng:140.3929}, HNL:{lat:21.3187,lng:-157.9225}, SFO:{lat:37.6213,lng:-122.379}, PHX:{lat:33.4373,lng:-112.0078}, LHR:{lat:51.47,lng:-0.4543}, ZRH:{lat:47.4582,lng:8.5555} };
     const countries = [{name:'Deutschland',lat:50.8,lng:10.2},{name:'Thailand',lat:14.8,lng:101.8},{name:'Japan',lat:37.5,lng:138.2},{name:'USA',lat:39.5,lng:-98.3},{name:'Gro\u00dfbritannien',lat:53.4,lng:-1.5},{name:'Schweiz',lat:46.8,lng:8.2}];
     const flights = [{from:'MUC',to:'BKK',date:'2026-10-08'},{from:'DMK',to:'CNX',date:'2026-10-10'},{from:'CNX',to:'BKK',date:'2026-10-13'},{from:'BKK',to:'NRT',date:'2026-10-15'},{from:'NRT',to:'HNL',date:'2026-10-27'},{from:'HNL',to:'SFO',date:'2026-11-05'},{from:'PHX',to:'LHR',date:'2026-11-22'},{from:'LHR',to:'ZRH',date:'2026-11-23'}];
@@ -41,7 +52,11 @@
     function arc(a,b){ const p=[]; let lng2=b.lng; if(Math.abs(lng2-a.lng)>180) lng2+=lng2>a.lng?-360:360; for(let i=0;i<=64;i++){ const t=i/64; p.push([a.lat+(b.lat-a.lat)*t+Math.sin(Math.PI*t)*2.2, a.lng+(lng2-a.lng)*t]); } return p; }
     function pin(){ return L.divIcon({className:'pin', html:'<i></i>', iconSize:[9,12], iconAnchor:[4,11]}); }
     function showStories(){
-      document.getElementById('app').innerHTML='<article class="story"><p class="kicker">7. Oktober 2026 \u00b7 M\u00fcnchen</p><h2>Der Countdown l\u00e4uft</h2><p>In einem Tag starten wir unsere gro\u00dfe Reise. Die Koffer sind fast gepackt, der K\u00fchlschrank ist leer, und irgendwo zwischen Ladeger\u00e4t und Pass liegt noch die Liste der Dinge, die wir bestimmt vergessen.</p><p>Morgen geht es von M\u00fcnchen nach Bangkok. Heute ist der letzte Abend, an dem die Wohnung noch nach Alltag riecht. Die Schuhe stehen schon an der T\u00fcr. Das Ticket ist gespeichert. Der Rest ist Warten, und ein bisschen Ungeduld.</p></article>';
+      document.getElementById('app').innerHTML='<div class="posts">'+stories.map(s=>'<article class="post"><p class="kicker">'+s.date+'</p><h2><a href="#story/'+s.id+'">'+s.country+'</a></h2><p>'+s.excerpt+'</p><a class="more" href="#story/'+s.id+'">Weiterlesen</a></article>').join('')+'</div>';
+    }
+    function showStory(id){
+      const s=stories.find(x=>x.id===id)||stories[0];
+      document.getElementById('app').innerHTML='<article class="story"><a class="back" href="#stories">\u2190 Alle Geschichten</a><p class="kicker">'+s.date+'</p><h2>'+s.country+'</h2>'+s.body.map(p=>'<p>'+p+'</p>').join('')+'</article>';
     }
     function showAtlas(){
       const today=todayIso();
@@ -56,7 +71,7 @@
     function showAbout(){
       document.getElementById('app').innerHTML='<section class="about-copy"><div><h2>Kerstin & Stefan</h2><p>Begleite uns auf unserer Reise einmal um die Welt. Vom Gro\u00dfstadtdschungel Bangkok \u00fcber die unbekannten Kulturen Japans und die historischen Kultursch\u00e4tze Hawaiis bis in die Weiten der USA, und zu allem, was uns dazwischen begegnet.</p></div><img alt="Kerstin und Stefan" src="https://n.uguu.se/qHvhtnAL.jpg"></section>';
     }
-    function go(){ const hash=location.hash||'#stories'; if(hash==='#atlas') showAtlas(); else if(hash==='#about') showAbout(); else showStories(); }
+    function go(){ const hash=location.hash||'#stories'; if(hash==='#atlas') showAtlas(); else if(hash==='#about') showAbout(); else if(hash.startsWith('#story/')) showStory(hash.slice(7)); else showStories(); }
     window.addEventListener('hashchange', go);
     go();
   </script>
