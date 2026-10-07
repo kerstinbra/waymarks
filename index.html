@@ -13,6 +13,7 @@
     h1, h2, h3 { font-weight: 400; }
     p, a, .kicker { font-weight: 300; }
     .mark { font-weight: 300; letter-spacing: 0.01em; }
+    .mark-dot { width: 11px; height: 11px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: #b4482a; box-shadow: none; margin-bottom: 3px; }
     #worldMap { height: 560px; border-radius: 24px; border: 1px solid rgba(28,23,18,.12); }
     .country-label { background: transparent; border: 0; box-shadow: none; font-family: Poppins, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: .04em; text-transform: uppercase; color: #5c534a; }
     .pin { background: none; border: 0; }
@@ -44,23 +45,14 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     const stories = [
-      {id:'willkommen', country:'Sch\u00f6n, dass du da bist', date:'7. Oktober 2026', excerpt:'Bald ist es so weit. In einem Tag starten wir unsere grosse Reise.', body:['Bald ist es so weit. In einem Tag starten wir unsere grosse Reise. Die Koffer sind fast gepackt, der K\u00fchlschrank ist leer, und irgendwo zwischen Ladeger\u00e4t und Pass liegt noch die Liste der Dinge, die wir bestimmt vergessen.','F\u00fcr uns sind es viele erste Male \u2013 das erste Mal Asien, f\u00fcr mich ist es die erste Reise ausserhalb der Schulferien. Die Idee, mit unserer Route einmal um die Welt zu reisen, war Stefans. Mit der \u00dcberlegung, dass es von Japan nur mehr ein gr\u00f6sserer Katzensprung bis nach Hawaii ist, schliesst der R\u00fcckflug \u00fcber die USA unseren Kreis einmal quer um die Welt.','So bin ich gespannt, welche Facetten wir an uns selbst neu entdecken d\u00fcrfen \u2013 durch so viele Spiegel in unterschiedlichen Kulturen. Ich freue mich darauf, in ganz andere Welten einzutauchen und schlussendlich auf eine andere Art zu merken, was mir in meinem Leben wirklich wichtig ist. Bald geht das Licht hier aus, und morgen Nachmittag sitzen wir schon im Flieger nach Bangkok.'], quote:'Reisen l\u00e4sst dich sprachlos und verwandelt dich dann in einen Geschichtenerz\u00e4hler.', quoteBy:'Ibn Battuta'},
+      {id:'willkommen', country:'Sch\u00f6n, dass du da bist', date:'7. Oktober 2026', excerpt:'Bald ist es so weit. In einem Tag starten wir unsere grosse Reise.', body:['Bald ist es so weit. In einem Tag starten wir unsere grosse Reise. Die Koffer sind fast gepackt, der K\u00fchlschrank ist leer, und irgendwo zwischen Ladeger\u00e4t und Pass liegt noch die Liste der Dinge, die wir bestimmt vergessen.','F\u00fcr uns sind es viele erste Male \u2013 das erste Mal Asien, f\u00fcr mich das erste Mal Reisen ausserhalb der Schulferien, das erste Mal um die Welt. Die Idee, mit unserer Route einmal um die Welt zu reisen, war Stefans. Mit der \u00dcberlegung, dass es von Japan nur mehr ein gr\u00f6sserer Katzensprung bis nach Hawaii ist, schliesst der R\u00fcckflug \u00fcber die USA unseren Kreis einmal quer um die Welt.','So bin ich gespannt, welche Facetten wir an uns selbst neu entdecken d\u00fcrfen \u2013 durch so viele Spiegel in unterschiedlichen Kulturen. Ich freue mich darauf, in ganz andere Welten einzutauchen und schlussendlich auf eine andere Art zu merken, was mir in meinem Leben wirklich wichtig ist. Bald geht das Licht hier aus, und morgen Nachmittag sitzen wir schon im Flieger nach Bangkok.'], quote:'Reisen l\u00e4sst dich sprachlos und verwandelt dich dann in einen Geschichtenerz\u00e4hler.', quoteBy:'Ibn Battuta'},
       {id:'thailand', country:'Thailand', date:'9. Oktober 2026'},
       {id:'japan', country:'Japan', date:'15. Oktober 2026'},
       {id:'hawaii', country:'Hawaii', date:'26. Oktober 2026'},
       {id:'usa', country:'USA', date:'5. November 2026'},
       {id:'schweiz', country:'Schweiz', date:'23. November 2026'}
     ];
-    const places = [
-      ['8. Oktober','M\u00fcnchen \u2013 Bangkok'],
-      ['10. Oktober','Bangkok \u2013 Chiang Mai'],
-      ['13. Oktober','Chiang Mai \u2013 Bangkok'],
-      ['15. Oktober','Bangkok \u2013 Tokio'],
-      ['27. Oktober','Tokio \u2013 Honolulu'],
-      ['5. November','Honolulu \u2013 San Francisco'],
-      ['22. November','Phoenix \u2013 London'],
-      ['23. November','London \u2013 Z\u00fcrich']
-    ];
+    const places = [['8. Oktober','M\u00fcnchen \u2013 Bangkok'],['10. Oktober','Bangkok \u2013 Chiang Mai'],['13. Oktober','Chiang Mai \u2013 Bangkok'],['15. Oktober','Bangkok \u2013 Tokio'],['27. Oktober','Tokio \u2013 Honolulu'],['5. November','Honolulu \u2013 San Francisco'],['22. November','Phoenix \u2013 London'],['23. November','London \u2013 Z\u00fcrich']];
     const airports = { MUC:{lat:48.3538,lng:11.7861}, BKK:{lat:13.69,lng:100.7501}, DMK:{lat:13.9126,lng:100.6068}, CNX:{lat:18.7668,lng:98.9626}, NRT:{lat:35.772,lng:140.3929}, HNL:{lat:21.3187,lng:-157.9225}, SFO:{lat:37.6213,lng:-122.379}, PHX:{lat:33.4373,lng:-112.0078}, LHR:{lat:51.47,lng:-0.4543}, ZRH:{lat:47.4582,lng:8.5555} };
     const countries = [{name:'Deutschland',lat:50.8,lng:10.2},{name:'Thailand',lat:14.8,lng:101.8},{name:'Japan',lat:37.5,lng:138.2},{name:'USA',lat:39.5,lng:-98.3},{name:'Schweiz',lat:46.8,lng:8.2}];
     const flights = [{from:'MUC',to:'BKK',date:'2026-10-08'},{from:'DMK',to:'CNX',date:'2026-10-10'},{from:'CNX',to:'BKK',date:'2026-10-13'},{from:'BKK',to:'NRT',date:'2026-10-15'},{from:'NRT',to:'HNL',date:'2026-10-27'},{from:'HNL',to:'SFO',date:'2026-11-05'},{from:'PHX',to:'LHR',date:'2026-11-22'},{from:'LHR',to:'ZRH',date:'2026-11-23'}];
