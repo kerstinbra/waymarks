@@ -11,6 +11,9 @@
     .city-label, .country-label { background: transparent; border: 0; box-shadow: none; font-family: Georgia, serif; color: #1c1712; }
     .city-label { font-size: 13px; font-weight: 700; }
     .country-label { font-size: 15px; letter-spacing: .04em; text-transform: uppercase; color: #5c534a; }
+    .about-copy { max-width: 40rem; }
+    .about-copy h2 { font-size: 3rem; margin: 0 0 12px; }
+    .about-copy p { color: #5c534a; font-size: 1.08rem; }
   </style>
 </head>
 <body>
@@ -72,7 +75,10 @@
       flights.filter(f=>visible(f,today)).forEach(f=> L.polyline(arc(airports[f.from],airports[f.to]),{color:'#b4482a',weight:2.5,dashArray:'7 8'}).addTo(map));
       setTimeout(()=>map.invalidateSize(),200);
     }
-    function go(){ if((location.hash||'#home')==='#atlas') showAtlas(); else if(!location.hash||location.hash==='#home') document.getElementById('app').innerHTML='<div class="section-head"><h2>Waymarks</h2></div>'; }
+    function showAbout(){
+      document.getElementById('app').innerHTML='<section class="about-copy"><p class="kicker">About</p><h2>Kerstin und Stefan</h2><p>Wir sind Kerstin und Stefan. Dieses Journal ist unser gemeinsames Notizbuch von unterwegs: Städte, Umwege und die Dinge, die wir uns merken wollen.</p><p>Wir starten in München und nehmen den langen Weg über Asien und den Pazifik, bevor es wieder nach Hause geht. Hier stehen keine Tipps, sondern was uns unterwegs wirklich begegnet ist.</p></section>';
+    }
+    function go(){ const hash=location.hash||'#home'; if(hash==='#atlas') showAtlas(); else if(hash==='#about') showAbout(); else document.getElementById('app').innerHTML='<div class="section-head"><h2>Waymarks</h2></div>'; }
     window.addEventListener('hashchange', go);
     go();
   </script>
