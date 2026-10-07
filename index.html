@@ -76,7 +76,7 @@
       setTimeout(()=>map.invalidateSize(),200);
     }
     function showAbout(){
-      document.getElementById('app').innerHTML='<section class="about-copy"><p class="kicker">About</p><h2>Kerstin und Stefan</h2><p>Wir sind Kerstin und Stefan. Dieses Journal ist unser gemeinsames Notizbuch von unterwegs: Städte, Umwege und die Dinge, die wir uns merken wollen.</p><p>Wir starten in München und nehmen den langen Weg über Asien und den Pazifik, bevor es wieder nach Hause geht. Hier stehen keine Tipps, sondern was uns unterwegs wirklich begegnet ist.</p></section>';
+      document.getElementById('app').innerHTML='<section class="about-copy"><h2>Kerstin & Stefan</h2><p>Begleite uns auf unserer Reise einmal um die Welt. Vom Großstadtdschungel Bangkok über die unbekannten Kulturen Japans und die historischen Kulturschätze Hawaiis bis in die Weiten der USA, und zu allem, was uns dazwischen begegnet.</p></section>';
     }
     function go(){ const hash=location.hash||'#home'; if(hash==='#atlas') showAtlas(); else if(hash==='#about') showAbout(); else document.getElementById('app').innerHTML='<div class="section-head"><h2>Waymarks</h2></div>'; }
     window.addEventListener('hashchange', go);
