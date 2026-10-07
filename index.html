@@ -15,12 +15,13 @@
     .about-copy h2, .story h2, .post h2 { font-size: clamp(2.2rem, 5vw, 3.4rem); margin: 8px 0 12px; }
     .about-copy p, .story p, .post p { color: #5c534a; font-size: 1.08rem; }
     .about-copy img { width: 100%; border-radius: 24px; display: block; object-fit: cover; max-height: 560px; }
-    .posts { display: flex; flex-direction: column; gap: 28px; max-width: 46rem; }
-    .post { padding-bottom: 22px; border-bottom: 1px solid rgba(28,23,18,.12); }
-    .post a.more { color: #b4482a; }
+    .posts, .places { display: flex; flex-direction: column; gap: 14px; max-width: 46rem; margin-top: 22px; }
+    .post, .place { padding-bottom: 16px; border-bottom: 1px solid rgba(28,23,18,.12); display: grid; grid-template-columns: 9.5rem 1fr; gap: 8px 16px; }
+    .post { display: block; }
+    .post a.more, .place span { color: #b4482a; }
     .story { max-width: 42rem; }
     .back { color: #b4482a; display: inline-block; margin-bottom: 12px; }
-    @media (max-width: 800px) { .about-copy { grid-template-columns: 1fr; } }
+    @media (max-width: 800px) { .about-copy { grid-template-columns: 1fr; } .place { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -41,11 +42,21 @@
       {id:'japan', country:'Japan', date:'15. Oktober 2026', excerpt:'Mehr dazu ab dem 15. Oktober.', body:['Mehr dazu ab dem 15. Oktober.']},
       {id:'hawaii', country:'Hawaii', date:'26. Oktober 2026', excerpt:'Mehr dazu ab dem 26. Oktober.', body:['Mehr dazu ab dem 26. Oktober.']},
       {id:'usa', country:'USA', date:'5. November 2026', excerpt:'Mehr dazu ab dem 5. November.', body:['Mehr dazu ab dem 5. November.']},
-      {id:'grossbritannien', country:'Gro\u00dfbritannien', date:'23. November 2026', excerpt:'Mehr dazu ab dem 23. November.', body:['Mehr dazu ab dem 23. November.']},
       {id:'schweiz', country:'Schweiz', date:'23. November 2026', excerpt:'Mehr dazu ab dem 23. November.', body:['Mehr dazu ab dem 23. November.']}
     ];
+    const places = [
+      ['8. Oktober','M\u00fcnchen'],
+      ['9. Oktober','Bangkok'],
+      ['10. Oktober','Chiang Mai'],
+      ['13. Oktober','Bangkok'],
+      ['15. Oktober','Tokio'],
+      ['26. Oktober','Honolulu'],
+      ['5. November','San Francisco'],
+      ['22. November','Phoenix'],
+      ['23. November','Z\u00fcrich']
+    ];
     const airports = { MUC:{lat:48.3538,lng:11.7861}, BKK:{lat:13.69,lng:100.7501}, DMK:{lat:13.9126,lng:100.6068}, CNX:{lat:18.7668,lng:98.9626}, NRT:{lat:35.772,lng:140.3929}, HNL:{lat:21.3187,lng:-157.9225}, SFO:{lat:37.6213,lng:-122.379}, PHX:{lat:33.4373,lng:-112.0078}, LHR:{lat:51.47,lng:-0.4543}, ZRH:{lat:47.4582,lng:8.5555} };
-    const countries = [{name:'Deutschland',lat:50.8,lng:10.2},{name:'Thailand',lat:14.8,lng:101.8},{name:'Japan',lat:37.5,lng:138.2},{name:'USA',lat:39.5,lng:-98.3},{name:'Gro\u00dfbritannien',lat:53.4,lng:-1.5},{name:'Schweiz',lat:46.8,lng:8.2}];
+    const countries = [{name:'Deutschland',lat:50.8,lng:10.2},{name:'Thailand',lat:14.8,lng:101.8},{name:'Japan',lat:37.5,lng:138.2},{name:'USA',lat:39.5,lng:-98.3},{name:'Schweiz',lat:46.8,lng:8.2}];
     const flights = [{from:'MUC',to:'BKK',date:'2026-10-08'},{from:'DMK',to:'CNX',date:'2026-10-10'},{from:'CNX',to:'BKK',date:'2026-10-13'},{from:'BKK',to:'NRT',date:'2026-10-15'},{from:'NRT',to:'HNL',date:'2026-10-27'},{from:'HNL',to:'SFO',date:'2026-11-05'},{from:'PHX',to:'LHR',date:'2026-11-22'},{from:'LHR',to:'ZRH',date:'2026-11-23'}];
     function todayIso(){ const n=new Date(); return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0'); }
     function visible(f,t){ return f.date==='2026-10-08' || f.date<=t; }
@@ -60,11 +71,11 @@
     }
     function showAtlas(){
       const today=todayIso();
-      document.getElementById('app').innerHTML='<div class="section-head"><h2>Atlas</h2></div><div id="worldMap"></div>';
+      document.getElementById('app').innerHTML='<div class="section-head"><h2>Atlas</h2></div><div id="worldMap"></div><div class="places">'+places.map(p=>'<div class="place"><strong>'+p[0]+'</strong><span>'+p[1]+'</span></div>').join('')+'</div>';
       const map=L.map('worldMap',{worldCopyJump:true}).setView([28,15],2);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'\u00a9 OpenStreetMap',maxZoom:8}).addTo(map);
       countries.forEach(c=> L.marker([c.lat,c.lng],{interactive:false,opacity:0}).bindTooltip(c.name,{permanent:true,direction:'center',className:'country-label'}).addTo(map));
-      Object.keys(airports).forEach(code=>{ if(code==='DMK') return; L.marker([airports[code].lat,airports[code].lng],{icon:pin()}).addTo(map); });
+      Object.keys(airports).forEach(code=>{ if(code==='DMK'||code==='LHR') return; L.marker([airports[code].lat,airports[code].lng],{icon:pin()}).addTo(map); });
       flights.filter(f=>visible(f,today)).forEach(f=> L.polyline(arc(airports[f.from],airports[f.to]),{color:'#9a5344',weight:1.1,opacity:.8,dashArray:'1.5 7',lineCap:'round'}).addTo(map));
       setTimeout(()=>map.invalidateSize(),200);
     }
