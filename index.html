@@ -15,6 +15,9 @@
     .about-copy h2 { font-size: clamp(2.4rem, 5vw, 3.4rem); margin: 0 0 14px; }
     .about-copy p { color: #5c534a; font-size: 1.08rem; }
     .about-copy img { width: 100%; border-radius: 24px; display: block; object-fit: cover; max-height: 560px; }
+    .story { max-width: 42rem; }
+    .story h2 { font-size: clamp(2.4rem, 5vw, 3.6rem); margin: 8px 0 10px; }
+    .story p { font-size: 1.12rem; }
     @media (max-width: 800px) { .about-copy { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -37,6 +40,9 @@
     function visible(f,t){ return f.date==='2026-10-08' || f.date<=t; }
     function arc(a,b){ const p=[]; let lng2=b.lng; if(Math.abs(lng2-a.lng)>180) lng2+=lng2>a.lng?-360:360; for(let i=0;i<=64;i++){ const t=i/64; p.push([a.lat+(b.lat-a.lat)*t+Math.sin(Math.PI*t)*2.2, a.lng+(lng2-a.lng)*t]); } return p; }
     function pin(){ return L.divIcon({className:'pin', html:'<i></i>', iconSize:[9,12], iconAnchor:[4,11]}); }
+    function showStories(){
+      document.getElementById('app').innerHTML='<article class="story"><p class="kicker">7. Oktober 2026 \u00b7 M\u00fcnchen</p><h2>Der Countdown l\u00e4uft</h2><p>In einem Tag starten wir unsere gro\u00dfe Reise. Die Koffer sind fast gepackt, der K\u00fchlschrank ist leer, und irgendwo zwischen Ladeger\u00e4t und Pass liegt noch die Liste der Dinge, die wir bestimmt vergessen.</p><p>Morgen geht es von M\u00fcnchen nach Bangkok. Heute ist der letzte Abend, an dem die Wohnung noch nach Alltag riecht. Die Schuhe stehen schon an der T\u00fcr. Das Ticket ist gespeichert. Der Rest ist Warten, und ein bisschen Ungeduld.</p></article>';
+    }
     function showAtlas(){
       const today=todayIso();
       document.getElementById('app').innerHTML='<div class="section-head"><h2>Atlas</h2></div><div id="worldMap"></div>';
@@ -50,7 +56,7 @@
     function showAbout(){
       document.getElementById('app').innerHTML='<section class="about-copy"><div><h2>Kerstin & Stefan</h2><p>Begleite uns auf unserer Reise einmal um die Welt. Vom Gro\u00dfstadtdschungel Bangkok \u00fcber die unbekannten Kulturen Japans und die historischen Kultursch\u00e4tze Hawaiis bis in die Weiten der USA, und zu allem, was uns dazwischen begegnet.</p></div><img alt="Kerstin und Stefan" src="https://n.uguu.se/qHvhtnAL.jpg"></section>';
     }
-    function go(){ const hash=location.hash||'#home'; if(hash==='#atlas') showAtlas(); else if(hash==='#about') showAbout(); else document.getElementById('app').innerHTML='<div class="section-head"><h2>Waymarks</h2></div>'; }
+    function go(){ const hash=location.hash||'#stories'; if(hash==='#atlas') showAtlas(); else if(hash==='#about') showAbout(); else showStories(); }
     window.addEventListener('hashchange', go);
     go();
   </script>
