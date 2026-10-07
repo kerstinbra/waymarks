@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Waymarks — Travel Stories</title>
+  <meta name="description" content="A personal travel blog for field notes, photographs, and the long way home." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,620&family=Outfit:wght@340;480;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="mark" href="#home" data-nav="home">
+      <span class="mark-dot"></span>
+      Waymarks
+    </a>
+    <nav class="nav">
+      <a href="#stories" data-nav="stories">Stories</a>
+      <a href="#atlas" data-nav="atlas">Atlas</a>
+      <a href="#about" data-nav="about">About</a>
+    </nav>
+  </header>
+
+  <main id="app"></main>
+
+  <footer class="site-footer">
+    <p>Waymarks · notes from the road</p>
+    <p class="muted">Stories you write stay in this browser until you export them.</p>
+  </footer>
+
+  <dialog id="writeDialog" class="write-dialog">
+    <form id="writeForm">
+      <div class="dialog-head">
+        <h2>New field note</h2>
+        <button type="button" class="ghost" id="closeWrite">Close</button>
+      </div>
+      <label>Title<input name="title" required placeholder="The night train to…" /></label>
+      <div class="row">
+        <label>Place<input name="place" required placeholder="Lisbon" /></label>
+        <label>Country<input name="country" required placeholder="Portugal" /></label>
+      </div>
+      <div class="row">
+        <label>Date<input name="date" type="date" required /></label>
+        <label>Season
+          <select name="season">
+            <option>Spring</option>
+            <option>Summer</option>
+            <option>Autumn</option>
+            <option>Winter</option>
+          </select>
+        </label>
+      </div>
+      <label>Cover image URL<input name="image" placeholder="https://… (optional)" /></label>
+      <label>Excerpt<input name="excerpt" required placeholder="One sentence that pulls the reader in." /></label>
+      <label>Story<textarea name="body" required rows="8" placeholder="Write in paragraphs. Separate them with a blank line."></textarea></label>
+      <div class="dialog-actions">
+        <button type="submit" class="primary">Publish locally</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
