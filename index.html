@@ -21,7 +21,7 @@
     .about-copy { display: grid; grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: center; }
     .about-copy h2, .story h2, .post h2 { font-size: clamp(2rem, 4vw, 2.8rem); margin: 8px 0 12px; font-weight: 400; }
     .about-copy p, .story p, .post p { color: #5c534a; font-size: 1.02rem; font-weight: 300; }
-    .about-copy img { width: 100%; border-radius: 24px; display: block; object-fit: cover; max-height: 560px; }
+    .about-copy img { width: 100%; max-width: 440px; border-radius: 24px; display: block; object-fit: cover; height: auto; }
     .posts, .places { display: flex; flex-direction: column; gap: 14px; max-width: 46rem; margin-top: 22px; }
     .post, .place { padding-bottom: 16px; border-bottom: 1px solid rgba(28,23,18,.12); }
     .place { display: grid; grid-template-columns: 9.5rem 1fr; gap: 8px 16px; }
@@ -29,7 +29,7 @@
     .story { max-width: 42rem; }
     .story blockquote { margin: 28px 0 0; padding-left: 16px; border-left: 2px solid #b4482a; color: #1c1712; font-size: 1.05rem; }
     .back { color: #b4482a; display: inline-block; margin-bottom: 12px; }
-    @media (max-width: 800px) { .about-copy { grid-template-columns: 1fr; } .place { grid-template-columns: 1fr; } }
+    @media (max-width: 800px) { .about-copy { grid-template-columns: 1fr; } .about-copy img { max-width: 100%; } .place { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -72,7 +72,7 @@
       flights.filter(f=>visible(f,today)).forEach(f=> L.polyline(arc(airports[f.from],airports[f.to]),{color:'#9a5344',weight:1.1,opacity:.8,dashArray:'1.5 7',lineCap:'round'}).addTo(map));
       setTimeout(()=>map.invalidateSize(),200);
     }
-    function showAbout(){ document.getElementById('app').innerHTML='<section class="about-copy"><div><h2>Kerstin & Stefan</h2><p>Begleite uns auf unserer Reise einmal um die Welt. Vom Gro\u00dfstadtdschungel Bangkok \u00fcber die unbekannten Kulturen Japans und die historischen Kultursch\u00e4tze Hawaiis bis in die Weiten der USA, und zu allem, was uns dazwischen begegnet.</p></div><img alt="Kerstin und Stefan" src="https://n.uguu.se/qHvhtnAL.jpg"></section>'; }
+    function showAbout(){ document.getElementById('app').innerHTML='<section class="about-copy"><div><h2>Kerstin & Stefan</h2><p>Begleite uns auf unserer Reise einmal um die Welt. Vom Gro\u00dfstadtdschungel Bangkok \u00fcber die unbekannten Kulturen Japans und die historischen Kultursch\u00e4tze Hawaiis bis in die Weiten der USA, und zu allem, was uns dazwischen begegnet.</p></div><img alt="Kerstin und Stefan" src="https://n.uguu.se/QfnhYafx.jpg"></section>'; }
     function go(){ const hash=location.hash||'#stories'; if(hash==='#atlas') showAtlas(); else if(hash==='#about') showAbout(); else if(hash.startsWith('#story/')) showStory(hash.slice(7)); else showStories(); }
     window.addEventListener('hashchange', go); go();
   </script>
