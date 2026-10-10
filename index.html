@@ -27,7 +27,7 @@
     .place { display: grid; grid-template-columns: 9.5rem 1fr; gap: 8px 16px; }
     .post a.more, .place span { color: #b4482a; }
     .story { max-width: 46rem; }
-    .carousel { position: relative; margin: 8px 0 22px; border-radius: 18px; overflow: hidden; background: #ebe4d6; }
+    .carousel { position: relative; margin: 22px 0 8px; border-radius: 18px; overflow: hidden; background: #ebe4d6; }
     .carousel img { width: 100%; height: min(72vw, 520px); object-fit: cover; display: block; }
     .carousel button { position: absolute; top: 50%; transform: translateY(-50%); width: 42px; height: 42px; border: 0; border-radius: 50%; background: rgba(255,255,255,.86); color: #1c1712; font-size: 22px; cursor: pointer; }
     .carousel .prev { left: 12px; }
@@ -70,7 +70,7 @@
     function showStory(id){
       const s=stories.find(x=>x.id===id)||stories[0];
       const photos=s.images&&s.images.length?'<div class="carousel"><button class="prev" type="button" aria-label="Zur\u00fcck">\u2039</button><img alt="Bangkok"><button class="next" type="button" aria-label="Weiter">\u203a</button><span class="count"></span></div>':'';
-      document.getElementById('app').innerHTML='<article class="story"><a class="back" href="#stories">\u2190 Alle Geschichten</a><p class="kicker">'+s.date+'</p><h2>'+s.country+'</h2>'+photos+(s.body||[]).map(p=>'<p>'+p+'</p>').join('')+(s.quote?'<blockquote>\u201e'+s.quote+'\u201c <span class="meta">\u2014 '+s.quoteBy+'</span></blockquote>':'')+'</article>';
+      document.getElementById('app').innerHTML='<article class="story"><a class="back" href="#stories">\u2190 Alle Geschichten</a><p class="kicker">'+s.date+'</p><h2>'+s.country+'</h2>'+(s.body||[]).map(p=>'<p>'+p+'</p>').join('')+photos+(s.quote?'<blockquote>\u201e'+s.quote+'\u201c <span class="meta">\u2014 '+s.quoteBy+'</span></blockquote>':'')+'</article>';
       if(!s.images||!s.images.length) return;
       let i=0; const img=document.querySelector('.carousel img'); const count=document.querySelector('.carousel .count');
       function show(n){ i=(n+s.images.length)%s.images.length; img.src=s.images[i]; count.textContent=(i+1)+' / '+s.images.length; }
