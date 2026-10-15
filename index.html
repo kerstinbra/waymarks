@@ -144,8 +144,9 @@
       flights.filter(f=>visible(f,today)).forEach(f=> L.polyline(arc(airports[f.from],airports[f.to]),{color:'#9a5344',weight:1.1,opacity:.8,dashArray:'1.5 7',lineCap:'round'}).addTo(map));
       setTimeout(()=>map.invalidateSize(),200);
     }
-    function showAbout(){ document.getElementById('app').innerHTML='<section class="about-copy"><div><h2>Kerstin & Stefan</h2><p>Begleite uns auf unserer Reise einmal um die Welt. Vom Gro\u00dfstadtdschungel Bangkok \u00fcber die unbekannten Kulturen Japans und die historischen Kultursch\u00e4tze Hawaiis bis in die Weiten der USA, und zu allem, was uns dazwischen begegnet.</p></div><img alt="Kerstin und Stefan" src="images/kerstin-stefan.jpg"></section>'; }
+    function showAbout(){ const about = lang==='en' ? 'Join us on our journey once around the world. From the urban jungle of Bangkok through the unknown cultures of Japan and the historic treasures of Hawaii to the vastness of the USA, and everything we encounter in between.' : 'Begleite uns auf unserer Reise einmal um die Welt. Vom Gro\u00dfstadtdschungel Bangkok \u00fcber die unbekannten Kulturen Japans und die historischen Kultursch\u00e4tze Hawaiis bis in die Weiten der USA, und zu allem, was uns dazwischen begegnet.'; document.getElementById('app').innerHTML='<section class="about-copy"><div><h2>Kerstin & Stefan</h2><p>'+about+'</p></div><img alt="Kerstin und Stefan" src="images/kerstin-stefan.jpg"></section>'; }
     function go(){ const hash=location.hash||'#stories'; if(hash==='#atlas') showAtlas(); else if(hash==='#about') showAbout(); else if(hash==='#story/thailand') showCountry('thailand'); else if(hash.startsWith('#story/')) showStory(hash.slice(7)); else showStories(); }
+    document.querySelectorAll('.lang').forEach(b=>{ b.classList.toggle('active', b.dataset.lang===lang); b.addEventListener('click', ()=>{ lang=b.dataset.lang; localStorage.setItem('waymarks-lang', lang); document.querySelectorAll('.lang').forEach(x=>x.classList.toggle('active', x.dataset.lang===lang)); go(); }); });
     window.addEventListener('hashchange', go); go();
   </script>
 </body>
