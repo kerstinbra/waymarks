@@ -45,6 +45,7 @@
     .lang { border: 0; background: transparent; font-size: 16px; line-height: 1; padding: 2px 4px; cursor: pointer; opacity: .45; border-radius: 6px; }
     .lang.active { opacity: 1; }
     .site-header { display: flex; align-items: center; }
+  .gallery video { width: 100%; height: 100%; object-fit: cover; display: block; }
   </style>
 </head>
 <body>
@@ -119,10 +120,10 @@
     function openGallery(images, start){
       let i=start;
       const box=document.createElement('div'); box.className='lightbox';
-      box.innerHTML='<button class="close" type="button" aria-label="Schliessen">\u00d7</button><button class="prev" type="button" aria-label="Zur\u00fcck">\u2039</button><img referrerpolicy="no-referrer" alt="Foto"><p class="caption"></p><button class="next" type="button" aria-label="Weiter">\u203a</button>';
+      box.innerHTML='<button class="close" type="button" aria-label="Schliessen">\u00d7</button><button class="prev" type="button" aria-label="Zur\u00fcck">\u2039</button><img referrerpolicy="no-referrer" alt="Foto"><video controls playsinline style="display:none;max-width:100%;max-height:80vh"></video><p class="caption"></p><button class="next" type="button" aria-label="Weiter">\u203a</button>';
       document.body.appendChild(box);
-      const img=box.querySelector('img'); const caption=box.querySelector('.caption');
-      function show(n){ i=(n+images.length)%images.length; img.src=images[i].src+'?v=6'; caption.textContent=images[i].caption||''; }
+      const img=box.querySelector('img'); const vid=box.querySelector('video'); const caption=box.querySelector('.caption');
+      function show(n){ i=(n+images.length)%images.length; const item=images[i]; caption.textContent=item.caption||''; if(item.video){ img.style.display='none'; vid.style.display='block'; vid.src=item.src; vid.play(); } else { vid.pause(); vid.style.display='none'; img.style.display='block'; img.src=item.src+'?v=6'; } }
       box.querySelector('.prev').onclick=()=>show(i-1);
       box.querySelector('.next').onclick=()=>show(i+1);
       box.querySelector('.close').onclick=()=>box.remove();
